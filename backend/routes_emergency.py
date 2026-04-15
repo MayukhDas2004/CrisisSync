@@ -19,6 +19,42 @@ class EmergencyCreate(BaseModel):
 class EmergencyUpdate(BaseModel):
     status: str  # active, assigned, resolved
 
+def smart_assign(emergency_type: str, floor: int, db: Session):
+    # Step 1: Same type + Same floor
+    staff = db.query(models.Staff).filter(
+        models.Staff.is_available == True,
+        models.Staff.staff_type == emergency_type,
+        models.Staff.current_floor == floor
+    ).first()
+    if staff:
+        return staff
+
+    # Step 2: Same type + Nearest floor
+    all_same_type = db.query(models.Staff).filter(
+        models.Staff.is_available == True,
+        models.Staff.staff_type == emergency_type
+    ).all()
+    if all_same_type:
+        return min(all_same_type, key=lambda s: abs((s.current_floor or 0) - floor))
+
+    # Step 3: General staff + Same floor
+    staff = db.query(models.Staff).filter(
+        models.Staff.is_available == True,
+        models.Staff.staff_type == "general",
+        models.Staff.current_floor == floor
+    ).first()
+    if staff:
+        return staff
+
+    # Step 4: Any available staff (nearest floor)
+    all_available = db.query(models.Staff).filter(
+        models.Staff.is_available == True
+    ).all()
+    if all_available:
+        return min(all_available, key=lambda s: abs((s.current_floor or 0) - floor))
+
+    return None
+
 @router.post("/report")
 def report_emergency(body: EmergencyCreate, db: Session = Depends(get_db)):
     emergency = models.Emergency(
@@ -34,22 +70,8 @@ def report_emergency(body: EmergencyCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(emergency)
 
-    # Smart Assignment - nearest available staff
-    staff_list = db.query(models.Staff).filter(
-        models.Staff.is_available == True
-    ).all()
-
-    assigned_staff = None
-
-    # First try to find staff on same floor
-    for staff in staff_list:
-        if staff.current_floor == body.floor:
-            assigned_staff = staff
-            break
-
-    # If no staff on same floor, take any available
-    if not assigned_staff and staff_list:
-        assigned_staff = staff_list[0]
+    # Smart Assignment
+    assigned_staff = smart_assign(body.emergency_type, body.floor, db)
 
     if assigned_staff:
         assignment = models.Assignment(
@@ -67,7 +89,8 @@ def report_emergency(body: EmergencyCreate, db: Session = Depends(get_db)):
         "emergency_id": emergency.id,
         "status": emergency.status,
         "message": "Emergency reported successfully",
-        "assigned_staff": assigned_staff.id if assigned_staff else None
+        "assigned_staff": assigned_staff.id if assigned_staff else None,
+        "assigned_staff_type": assigned_staff.staff_type if assigned_staff else None
     }
 
 @router.get("/all")
