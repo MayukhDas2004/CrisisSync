@@ -5,6 +5,7 @@ import models
 from routes_auth import router as auth_router
 from routes_emergency import router as emergency_router
 from routes_staff import router as staff_router
+from routes_room import router as room_router
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -21,6 +22,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(emergency_router, prefix="/emergency", tags=["Emergency"])
 app.include_router(staff_router, prefix="/staff", tags=["Staff"])
+app.include_router(room_router, prefix="/room", tags=["Room"])
 
 @app.get("/")
 def root():
