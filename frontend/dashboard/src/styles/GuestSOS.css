@@ -1,0 +1,176 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.sos-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.sos-box {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.sos-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sos-header h1 {
+  font-size: 28px;
+  color: #dc3545;
+  margin-bottom: 8px;
+}
+
+.sos-header p {
+  color: #666;
+  font-size: 14px;
+}
+
+.sos-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group select,
+.form-group input {
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  border-color: #dc3545;
+}
+
+.emergency-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.emergency-type-btn {
+  flex: 1;
+  padding: 15px 10px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.emergency-type-btn:hover {
+  transform: scale(1.05);
+}
+
+.emergency-type-btn.fire.selected {
+  background: #fff3cd;
+  border-color: #ff6b35;
+  color: #ff6b35;
+}
+
+.emergency-type-btn.medical.selected {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #28a745;
+}
+
+.emergency-type-btn.threat.selected {
+  background: #f8d7da;
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.sos-submit-btn {
+  padding: 18px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.sos-submit-btn:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.sos-submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.sos-success {
+  background: white;
+  border-radius: 16px;
+  padding: 60px 40px;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.success-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+}
+
+.sos-success h1 {
+  color: #28a745;
+  margin-bottom: 15px;
+  font-size: 28px;
+}
+
+.sos-success p {
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.sos-reset-btn {
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.sos-reset-btn:hover {
+  background: #c82333;
+}
