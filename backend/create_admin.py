@@ -1,27 +1,24 @@
-from database import SessionLocal 
-from models import User            
-from passlib.context import CryptContext
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from database import SessionLocal
+from models import User
+from auth import get_password_hash
+
 db = SessionLocal()
 
-# Create the user only if it doesn't exist
-user = db.query(User).filter(User.username == "admin").first()
-if not user:
-    hashed_password = pwd_context.hash("admin123")
-    # Note: Adjust 'email' field if Person C's model requires it
-    try:
-        new_user = User(
-            username="admin",
-            email="admin@crissync.com",
-            hashed_password=hashed_password,
-            is_active=True
-            # Add is_superuser=True if required by your model
-        )
-        db.add(new_user)
-        db.commit()
-        print("✅ Admin user 'admin' created successfully!")
-    except Exception as e:
-        print(f"⚠️ Error creating user (try removing email/is_active fields): {e}")
+existing = db.query(User).filter(User.email == "admin@crisissync.com").first()
+if existing:
+    print("Admin already exists!")
 else:
-    print("ℹ️ User 'admin' already exists.")
+    admin = User(
+        name="Admin",
+        email="admin@crisissync.com",
+        password=get_password_hash("admin123"),
+        role="admin",
+        is_active=True
+    )
+    db.add(admin)
+    db.commit()
+    print("✅ Admin created successfully!")
+    print("Email: admin@crisissync.com")
+    print("Password: admin123")
+
 db.close()
