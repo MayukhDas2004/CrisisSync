@@ -1,20 +1,34 @@
 import React, { useState } from "react";
 
 export default function Signup() {
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       <h2>Signup</h2>
+
       <input
         placeholder="Email"
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
+        onChange={(e) =>
+          setForm({ ...form, email: e.target.value })
+        }
       />
+
+      <br />
+
       <input
-        placeholder="Password"
         type="password"
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
+        placeholder="Password"
+        onChange={(e) =>
+          setForm({ ...form, password: e.target.value })
+        }
       />
+
+      <br />
+
       <button>Sign Up</button>
     </div>
   );
