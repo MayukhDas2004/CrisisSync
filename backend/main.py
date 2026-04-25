@@ -13,6 +13,10 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="CrisisSync API")
 
+@app.get("/")
+def root():
+    return {"message": "CrisisSync backend running"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
