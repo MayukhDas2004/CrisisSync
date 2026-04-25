@@ -1,35 +1,57 @@
 import React, { useState } from "react";
+import API from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
-export default function Signup() {
+function Signup() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: ""
   });
 
+  const [error, setError] = useState("");
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      await API.post("/auth/register", form);
+
+      alert("Signup successful! Please login.");
+      navigate("/");
+    } catch (err) {
+      setError("Signup failed. Try again.");
+    }
+  };
+
   return (
-    <div style={{ padding: 20 }}>
+    <div>
       <h2>Signup</h2>
 
-      <input
-        placeholder="Email"
-        onChange={(e) =>
-          setForm({ ...form, email: e.target.value })
-        }
-      />
+      <form onSubmit={handleSignup}>
+        <input
+          placeholder="Username"
+          onChange={(e) =>
+            setForm({ ...form, username: e.target.value })
+          }
+        />
 
-      <br />
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) =>
+            setForm({ ...form, password: e.target.value })
+          }
+        />
 
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) =>
-          setForm({ ...form, password: e.target.value })
-        }
-      />
+        <button type="submit">Create Account</button>
+      </form>
 
-      <br />
-
-      <button>Sign Up</button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
+
+export default Signup;
