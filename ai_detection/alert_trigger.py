@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 
 # Backend API URL
-BACKEND_URL = "http://localhost:8000/emergency/report"
+BACKEND_URL =  "https://crisissync-0z8z.onrender.com/emergency/report"
 
 def send_alert(emergency_type: str, location: str, floor: int):
     payload = {
