@@ -11,31 +11,29 @@ from routes_emergency import router as emergency_router
 from routes_staff import router as staff_router
 from routes_room import router as room_router
 
-# Create tables
+# Create DB tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="CrisisSync API")
 
-# ✅ CORS FIX (IMPORTANT)
-origins = [
-    "http://localhost:3000",
-    "https://crisis-sync-85jn.vercel.app"
-]
-
+# ✅ FIXED CORS (IMPORTANT)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,   # NOT "*"
+    allow_origins=[
+        "http://localhost:3000",
+        "https://crisis-sync-85jn.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ ROOT (only once)
+# ✅ Only ONE root route
 @app.get("/")
 def root():
-    return {"message": "CrisisSync backend running"}
+    return {"message": "CrisisSync API running 🚀"}
 
-# ✅ ROUTES
+# Routers
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(emergency_router, prefix="/emergency", tags=["Emergency"])
 app.include_router(staff_router, prefix="/staff", tags=["Staff"])
