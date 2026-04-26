@@ -37,20 +37,26 @@ function Signup() {
       console.log("FULL ERROR:", err);
       console.log("RESPONSE DATA:", err.response?.data);
 
-      setError(
-        err.response?.data?.detail ||
-        "Signup failed. Backend error."
-      );
+      // 🔥 FIX: handle FastAPI error structure safely
+      if (Array.isArray(err.response?.data?.detail)) {
+        setError(err.response.data.detail[0]?.msg || "Validation error");
+      } else if (typeof err.response?.data?.detail === "string") {
+        setError(err.response.data.detail);
+      } else {
+        setError("Signup failed. Backend error.");
+      }
+
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h2>Signup</h2>
 
       <form onSubmit={handleSignup}>
+
         <input
           placeholder="Full Name"
           value={form.name}
@@ -59,6 +65,8 @@ function Signup() {
           }
           required
         />
+
+        <br /><br />
 
         <input
           type="email"
@@ -70,6 +78,8 @@ function Signup() {
           required
         />
 
+        <br /><br />
+
         <input
           type="password"
           placeholder="Password"
@@ -80,12 +90,33 @@ function Signup() {
           required
         />
 
+        <br /><br />
+
+        {/* ✅ Role selector (important) */}
+        <select
+          value={form.role}
+          onChange={(e) =>
+            setForm({ ...form, role: e.target.value })
+          }
+        >
+          <option value="staff">Staff</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <br /><br />
+
         <button type="submit" disabled={loading}>
           {loading ? "Creating..." : "Create Account"}
         </button>
+
       </form>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* ✅ Safe error rendering */}
+      {error && (
+        <p style={{ color: "red", marginTop: "10px" }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }
