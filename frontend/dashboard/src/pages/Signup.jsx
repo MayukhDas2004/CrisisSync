@@ -27,13 +27,27 @@ function Signup() {
       alert("Signup successful! Please login.");
       navigate("/");
     } catch (err) {
-      console.log("SIGNUP ERROR:", err.response?.data);
-
-      // show real backend error if available
-      setError(
-        err.response?.data?.detail ||
-        "Signup failed. Try again."
+      // 🔍 FULL DEBUG LOGS
+      console.log("FULL ERROR:", err);
+      console.log(
+        "RESPONSE DATA:",
+        JSON.stringify(err.response?.data, null, 2)
       );
+
+      // 🧠 SAFE ERROR PARSING (NO MORE CRASH)
+      let message = "Signup failed";
+
+      if (err.response?.data?.detail) {
+        if (Array.isArray(err.response.data.detail)) {
+          message = err.response.data.detail
+            .map((e) => e.msg)
+            .join(", ");
+        } else {
+          message = err.response.data.detail;
+        }
+      }
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -68,6 +82,7 @@ function Signup() {
         </button>
       </form>
 
+      {/* ✅ SAFE RENDER (string only) */}
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
