@@ -6,8 +6,10 @@ function Signup() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    username: "",
-    password: ""
+    name: "",
+    email: "",
+    password: "",
+    role: "staff" // default role
   });
 
   const [error, setError] = useState("");
@@ -20,21 +22,21 @@ function Signup() {
 
     try {
       await API.post("/auth/register", {
-        username: form.username.trim(),
-        password: form.password
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        role: form.role
       });
 
       alert("Signup successful! Please login.");
       navigate("/");
     } catch (err) {
-      // 🔍 FULL DEBUG LOGS
       console.log("FULL ERROR:", err);
       console.log(
         "RESPONSE DATA:",
         JSON.stringify(err.response?.data, null, 2)
       );
 
-      // 🧠 SAFE ERROR PARSING (NO MORE CRASH)
       let message = "Signup failed";
 
       if (err.response?.data?.detail) {
@@ -59,10 +61,20 @@ function Signup() {
 
       <form onSubmit={handleSignup}>
         <input
-          placeholder="Username"
-          value={form.username}
+          placeholder="Full Name"
+          value={form.name}
           onChange={(e) =>
-            setForm({ ...form, username: e.target.value })
+            setForm({ ...form, name: e.target.value })
+          }
+          required
+        />
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={(e) =>
+            setForm({ ...form, email: e.target.value })
           }
           required
         />
@@ -77,12 +89,22 @@ function Signup() {
           required
         />
 
+        {/* Optional: role selector */}
+        <select
+          value={form.role}
+          onChange={(e) =>
+            setForm({ ...form, role: e.target.value })
+          }
+        >
+          <option value="staff">Staff</option>
+          <option value="admin">Admin</option>
+        </select>
+
         <button type="submit" disabled={loading}>
           {loading ? "Creating..." : "Create Account"}
         </button>
       </form>
 
-      {/* ✅ SAFE RENDER (string only) */}
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
