@@ -5,6 +5,7 @@ import '../styles/Login.css';
 
 function Login() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -25,10 +26,11 @@ function Login() {
       );
 
       const token = response.data.access_token;
+
       localStorage.setItem('token', token);
       localStorage.setItem('username', email);
 
-      // Redirect based on email
+      // ROLE REDIRECT LOGIC
       if (email.includes('admin')) {
         navigate('/admin');
       } else {
@@ -88,6 +90,23 @@ function Login() {
           </button>
 
         </form>
+
+        {/* 🔥 NEW: Signup Link */}
+        <div style={{ marginTop: '15px', textAlign: 'center' }}>
+          <p>
+            Don’t have an account?{' '}
+            <span
+              onClick={() => navigate('/signup')}
+              style={{
+                color: '#007bff',
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              Sign up
+            </span>
+          </p>
+        </div>
 
         <div className="login-footer">
           <p>CrisisSync © 2026 — Emergency Response System</p>
