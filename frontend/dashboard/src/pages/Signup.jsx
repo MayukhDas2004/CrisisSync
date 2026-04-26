@@ -21,35 +21,26 @@ function Signup() {
     setLoading(true);
 
     try {
-      await API.post("/auth/register", {
+      const res = await API.post("/auth/register", {
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
         role: form.role
       });
 
+      console.log("SUCCESS:", res.data);
+
       alert("Signup successful! Please login.");
       navigate("/");
+
     } catch (err) {
       console.log("FULL ERROR:", err);
-      console.log(
-        "RESPONSE DATA:",
-        JSON.stringify(err.response?.data, null, 2)
+      console.log("RESPONSE DATA:", err.response?.data);
+
+      setError(
+        err.response?.data?.detail ||
+        "Signup failed. Backend error."
       );
-
-      let message = "Signup failed";
-
-      if (err.response?.data?.detail) {
-        if (Array.isArray(err.response.data.detail)) {
-          message = err.response.data.detail
-            .map((e) => e.msg)
-            .join(", ");
-        } else {
-          message = err.response.data.detail;
-        }
-      }
-
-      setError(message);
     } finally {
       setLoading(false);
     }
@@ -88,17 +79,6 @@ function Signup() {
           }
           required
         />
-
-        {/* Optional: role selector */}
-        <select
-          value={form.role}
-          onChange={(e) =>
-            setForm({ ...form, role: e.target.value })
-          }
-        >
-          <option value="staff">Staff</option>
-          <option value="admin">Admin</option>
-        </select>
 
         <button type="submit" disabled={loading}>
           {loading ? "Creating..." : "Create Account"}
